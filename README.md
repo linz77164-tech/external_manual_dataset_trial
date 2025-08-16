@@ -23,19 +23,19 @@ Visit https://ui.nuxt.com to explore the documentation.
 ## Installation
 
 ```bash [pnpm]
-pnpm add @nuxt/ui
+pnpm add @nuxt/ui@alpha
 ```
 
 ```bash [yarn]
-yarn add @nuxt/ui
+yarn add @nuxt/ui@alpha
 ```
 
 ```bash [npm]
-npm install @nuxt/ui
+npm install @nuxt/ui@alpha
 ```
 
 ```bash [bun]
-bun add @nuxt/ui
+bun add @nuxt/ui@alpha
 ```
 
 ### Nuxt
