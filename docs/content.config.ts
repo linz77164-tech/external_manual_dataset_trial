@@ -92,6 +92,7 @@ export const collections = {
       component_customization: PageSection.extend({
         code: z.string()
       }),
+      templates: PageSection,
       community: PageSection
     })
   }),
