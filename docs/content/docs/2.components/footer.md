@@ -79,7 +79,7 @@ const items: NavigationMenuItem[] = [{
           icon="i-simple-icons-discord"
           color="neutral"
           variant="ghost"
-          to="https://chat.nuxt.dev"
+          to="https://go.nuxt.com/discord"
           target="_blank"
           aria-label="Discord"
         />
@@ -87,7 +87,7 @@ const items: NavigationMenuItem[] = [{
           icon="i-simple-icons-x"
           color="neutral"
           variant="ghost"
-          to="https://x.com/nuxt_js"
+          to="https://go.nuxt.com/x"
           target="_blank"
           aria-label="X"
         />
