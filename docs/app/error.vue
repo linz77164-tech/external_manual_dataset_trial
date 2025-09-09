@@ -57,7 +57,7 @@ provide('navigation', rootNavigation)
 
 <template>
   <UApp>
-    <NuxtLoadingIndicator color="#FFF" />
+    <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
 
     <div :class="[route.path.startsWith('/docs/') && 'root']">
       <!-- <Banner /> -->
