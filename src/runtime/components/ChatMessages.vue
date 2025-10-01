@@ -144,7 +144,7 @@ watchThrottled([() => props.messages, () => props.status], ([_, status]) => {
     // Check scroll position when message is streaming to show the auto scroll button
     checkScrollPosition()
   }
-}, { throttle: 100, leading: true })
+}, { deep: true, throttle: 100, leading: true })
 
 watch(() => props.status, (status) => {
   if (status !== 'submitted') {
