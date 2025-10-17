@@ -116,6 +116,7 @@ type SlotProps<T extends TreeItem> = (props: {
   indeterminate: boolean | undefined
   handleSelect: () => void
   handleToggle: () => void
+  ui: Tree['ui']
 }) => any
 
 export type TreeSlots<
@@ -130,6 +131,7 @@ export type TreeSlots<
   index: number
   level: number
   expanded: boolean
+  ui: Tree['ui']
   selected: boolean
   indeterminate: boolean | undefined
   handleSelect: () => void
@@ -264,7 +266,7 @@ defineExpose({
       >
         <slot
           :name="((item.slot ? `${item.slot}-wrapper` : 'item-wrapper') as keyof TreeSlots<T>)"
-          v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle }"
+          v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle, ui }"
           :item="(item as Extract<T[number], { slot: string; }>)"
         >
           <component
@@ -276,12 +278,12 @@ defineExpose({
           >
             <slot
               :name="((item.slot || 'item') as keyof TreeSlots<T>)"
-              v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle }"
+              v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle, ui }"
               :item="(item as Extract<T[number], { slot: string; }>)"
             >
               <slot
                 :name="((item.slot ? `${item.slot}-leading`: 'item-leading') as keyof TreeSlots<T>)"
-                v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle }"
+                v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle, ui }"
                 :item="(item as Extract<T[number], { slot: string; }>)"
               >
                 <UIcon
@@ -302,7 +304,7 @@ defineExpose({
               >
                 <slot
                   :name="((item.slot ? `${item.slot}-label`: 'item-label') as keyof TreeSlots<T>)"
-                  v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle }"
+                  v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle, ui }"
                   :item="(item as Extract<T[number], { slot: string; }>)"
                 >
                   {{ getItemLabel(item) }}
@@ -315,7 +317,7 @@ defineExpose({
               >
                 <slot
                   :name="((item.slot ? `${item.slot}-trailing`: 'item-trailing') as keyof TreeSlots<T>)"
-                  v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle }"
+                  v-bind="{ index, level, expanded: isExpanded, selected: isSelected, indeterminate: isIndeterminate, handleSelect, handleToggle, ui }"
                   :item="(item as Extract<T[number], { slot: string; }>)"
                 >
                   <UIcon
