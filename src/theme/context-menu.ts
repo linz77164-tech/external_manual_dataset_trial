@@ -15,7 +15,7 @@ export default (options: Required<ModuleOptions>) => ({
     itemTrailingIcon: 'shrink-0',
     itemTrailingKbds: 'hidden lg:inline-flex items-center shrink-0',
     itemTrailingKbdsSize: '',
-    itemWrapper: 'flex-1 flex flex-col items-start min-w-0',
+    itemWrapper: 'flex-1 flex flex-col text-start min-w-0',
     itemLabel: 'truncate',
     itemDescription: 'truncate text-muted',
     itemLabelExternalIcon: 'inline-block size-3 align-top text-dimmed'

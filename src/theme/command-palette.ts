@@ -23,7 +23,7 @@ export default (options: Required<ModuleOptions>) => ({
     itemTrailingHighlightedIcon: 'shrink-0 size-5 text-dimmed hidden group-data-highlighted:inline-flex',
     itemTrailingKbds: 'hidden lg:inline-flex items-center shrink-0 gap-0.5',
     itemTrailingKbdsSize: 'md',
-    itemWrapper: 'flex-1 flex flex-col items-start min-w-0',
+    itemWrapper: 'flex-1 flex flex-col text-start min-w-0',
     itemLabel: 'truncate space-x-1 text-dimmed',
     itemDescription: 'truncate text-muted',
     itemLabelBase: 'text-highlighted [&>mark]:text-inverted [&>mark]:bg-primary',
