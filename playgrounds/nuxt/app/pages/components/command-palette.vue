@@ -11,6 +11,7 @@ const searchTerm = ref('')
 // const searchTermDebounced = refDebounced(searchTerm, 200)
 const selected = ref([])
 const virtualize = ref(false)
+const preserveGroupOrder = ref(false)
 
 const { data: users, status } = await useFetch('https://jsonplaceholder.typicode.com/users', {
   // params: { q: searchTermDebounced },
@@ -157,6 +158,7 @@ defineShortcuts({
 <template>
   <Navbar>
     <USwitch v-model="virtualize" label="Virtualize" />
+    <USwitch v-model="preserveGroupOrder" label="Preserve order" />
 
     <UModal v-model:open="open">
       <UButton label="Open modal" color="neutral" variant="outline" />
@@ -195,6 +197,7 @@ defineShortcuts({
         }
       }"
       multiple
+      :preserve-group-order="preserveGroupOrder"
       class="sm:max-h-96"
       @update:model-value="onSelect"
     >
