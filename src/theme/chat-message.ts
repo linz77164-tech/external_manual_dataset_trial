@@ -8,7 +8,7 @@ export default (options: Required<NuxtOptions['ui']>) => ({
     leadingIcon: 'shrink-0',
     leadingAvatar: 'shrink-0',
     leadingAvatarSize: '',
-    content: 'relative text-pretty min-w-0',
+    content: 'relative text-pretty min-w-0 *:first:mt-0 *:last:mb-0',
     actions: ['opacity-0 group-hover/message:opacity-100 absolute bottom-0 flex items-center', options.theme.transitions && 'transition-opacity']
   },
   variants: {
