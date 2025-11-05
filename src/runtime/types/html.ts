@@ -10,14 +10,14 @@ import type {
 
 export type AnchorHTMLAttributes = Pick<VueAnchorHTMLAttributes, 'download' | 'href' | 'hreflang' | 'media' | 'ping' | 'rel' | 'target' | 'type' | 'referrerpolicy'>
 
-export type ButtonHTMLAttributes = Pick<VueButtonHTMLAttributes, 'autofocus' | 'disabled' | 'form' | 'formaction' | 'formenctype' | 'formmethod' | 'formnovalidate' | 'formtarget' | 'name' | 'type' | 'value'>
+export type ButtonHTMLAttributes = Pick<VueButtonHTMLAttributes, 'autofocus' | 'disabled' | 'form' | 'formaction' | 'formenctype' | 'formmethod' | 'formnovalidate' | 'formtarget' | 'name' | 'type'>
 
 export type FormHTMLAttributes = Pick<VueFormHTMLAttributes, 'acceptcharset' | 'action' | 'autocomplete' | 'enctype' | 'method' | 'name' | 'novalidate' | 'target'>
 
 export type ImgHTMLAttributes = Pick<VueImgHTMLAttributes, 'alt' | 'crossorigin' | 'decoding' | 'height' | 'loading' | 'referrerpolicy' | 'sizes' | 'src' | 'srcset' | 'usemap' | 'width'>
 
-export type InputHTMLAttributes = Pick<VueInputHTMLAttributes, 'accept' | 'alt' | 'autocomplete' | 'autofocus' | 'capture' | 'checked' | 'crossorigin' | 'disabled' | 'enterKeyHint' | 'form' | 'formaction' | 'formenctype' | 'formmethod' | 'formnovalidate' | 'formtarget' | 'height' | 'indeterminate' | 'list' | 'max' | 'maxlength' | 'min' | 'minlength' | 'multiple' | 'name' | 'pattern' | 'placeholder' | 'readonly' | 'required' | 'size' | 'src' | 'step' | 'type' | 'value' | 'width'>
+export type InputHTMLAttributes = Pick<VueInputHTMLAttributes, 'autocomplete' | 'autofocus' | 'disabled' | 'enterKeyHint' | 'form' | 'formaction' | 'formenctype' | 'formmethod' | 'formnovalidate' | 'formtarget' | 'list' | 'max' | 'maxlength' | 'min' | 'minlength' | 'name' | 'pattern' | 'placeholder' | 'readonly' | 'required' | 'size' | 'step' | 'type'>
 
 export type TableHTMLAttributes = Pick<VueTableHTMLAttributes, 'cellpadding' | 'cellspacing' | 'summary' | 'width'>
 
-export type TextareaHTMLAttributes = Pick<VueTextareaHTMLAttributes, 'autocomplete' | 'autofocus' | 'cols' | 'dirname' | 'disabled' | 'form' | 'maxlength' | 'minlength' | 'name' | 'placeholder' | 'readonly' | 'required' | 'rows' | 'value' | 'wrap'>
+export type TextareaHTMLAttributes = Pick<VueTextareaHTMLAttributes, 'autocomplete' | 'autofocus' | 'cols' | 'dirname' | 'disabled' | 'form' | 'maxlength' | 'minlength' | 'name' | 'placeholder' | 'readonly' | 'required' | 'rows' | 'wrap'>
