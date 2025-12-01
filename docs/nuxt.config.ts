@@ -11,6 +11,8 @@ export default defineNuxtConfig({
     '@nuxtjs/plausible',
     '@nuxtjs/mcp-toolkit',
     '@vueuse/nuxt',
+    '@vercel/analytics/nuxt/module',
+    '@vercel/speed-insights/nuxt/module',
     'nuxt-component-meta',
     'nuxt-og-image',
     'motion-v/nuxt',
