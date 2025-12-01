@@ -31,6 +31,15 @@
       ]
     },
     {
+      "groupName": "vite",
+      "matchPackageNames": [
+        "@vitejs/plugin-vue",
+        "vite",
+        "vue",
+        "vue-router"
+      ]
+    },
+    {
       "matchDepTypes": [
         "peerDependencies"
       ],
