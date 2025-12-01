@@ -11,6 +11,7 @@
     "v4"
   ],
   "ignoreDeps": [
+    "@vercel/analytics",
     "typescript",
     "actions/stale"
   ],
