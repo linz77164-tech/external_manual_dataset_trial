@@ -53,6 +53,7 @@ import { useAppConfig } from '#imports'
 import { buildFloatingUIMiddleware } from '../utils/editor'
 import { transformUI } from '../utils'
 import { tv } from '../utils/tv'
+import UButton from './Button.vue'
 
 defineOptions({ inheritAttrs: false })
 
