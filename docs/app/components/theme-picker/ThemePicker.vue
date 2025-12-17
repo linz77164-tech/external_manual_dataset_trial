@@ -6,6 +6,15 @@ import { omit } from '#ui/utils'
 
 const appConfig = useAppConfig()
 const colorMode = useColorMode()
+const { track } = useAnalytics()
+
+const open = ref(false)
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    track('Theme Picker Opened')
+  }
+})
 
 const { copy: copyCSS, copied: copiedCSS } = useClipboard()
 const { copy: copyAppConfig, copied: copiedAppConfig } = useClipboard()
@@ -18,6 +27,7 @@ const neutral = computed({
   set(option) {
     appConfig.ui.colors.neutral = option
     window.localStorage.setItem('nuxt-ui-neutral', appConfig.ui.colors.neutral)
+    track('Theme Changed', { setting: 'neutral', value: option })
   }
 })
 
@@ -31,6 +41,7 @@ const primary = computed({
     appConfig.ui.colors.primary = option
     window.localStorage.setItem('nuxt-ui-primary', appConfig.ui.colors.primary)
     setBlackAsPrimary(false)
+    track('Theme Changed', { setting: 'primary', value: option })
   }
 })
 
@@ -42,6 +53,7 @@ const radius = computed({
   set(option) {
     appConfig.theme.radius = option
     window.localStorage.setItem('nuxt-ui-radius', String(appConfig.theme.radius))
+    track('Theme Changed', { setting: 'radius', value: option })
   }
 })
 
@@ -53,6 +65,7 @@ const font = computed({
   set(option) {
     appConfig.theme.font = option
     window.localStorage.setItem('nuxt-ui-font', appConfig.theme.font)
+    track('Theme Changed', { setting: 'font', value: option })
   }
 })
 
@@ -77,6 +90,7 @@ const icon = computed({
     appConfig.theme.icons = option
     appConfig.ui.icons = themeIcons[option as keyof typeof themeIcons] as any
     window.localStorage.setItem('nuxt-ui-icons', appConfig.theme.icons)
+    track('Theme Changed', { setting: 'icons', value: option })
   }
 })
 
@@ -91,12 +105,16 @@ const mode = computed({
   },
   set(option) {
     colorMode.preference = option
+    track('Theme Changed', { setting: 'colorMode', value: option })
   }
 })
 
 function setBlackAsPrimary(value: boolean) {
   appConfig.theme.blackAsPrimary = value
   window.localStorage.setItem('nuxt-ui-black-as-primary', String(value))
+  if (value) {
+    track('Theme Changed', { setting: 'primary', value: 'black' })
+  }
 }
 
 const hasCSSChanges = computed(() => {
@@ -112,6 +130,8 @@ const hasAppConfigChanges = computed(() => {
 })
 
 function exportCSS() {
+  track('Theme Exported', { type: 'CSS' })
+
   const lines = [
     '@import "tailwindcss";',
     '@import "@nuxt/ui";'
@@ -141,6 +161,8 @@ function exportCSS() {
 }
 
 function exportAppConfig() {
+  track('Theme Exported', { type: 'AppConfig' })
+
   const config: Record<string, any> = {}
 
   if (appConfig.ui.colors.primary !== 'green' || appConfig.ui.colors.neutral !== 'slate') {
@@ -170,25 +192,33 @@ function exportAppConfig() {
 }
 
 function resetTheme() {
-  primary.value = 'green'
-  neutral.value = 'slate'
-  radius.value = 0.25
-  font.value = 'Public Sans'
-  icon.value = 'lucide'
-  setBlackAsPrimary(false)
+  track('Theme Reset')
 
+  // Reset without triggering individual tracking events
+  appConfig.ui.colors.primary = 'green'
   window.localStorage.removeItem('nuxt-ui-primary')
+
+  appConfig.ui.colors.neutral = 'slate'
   window.localStorage.removeItem('nuxt-ui-neutral')
+
+  appConfig.theme.radius = 0.25
   window.localStorage.removeItem('nuxt-ui-radius')
+
+  appConfig.theme.font = 'Public Sans'
   window.localStorage.removeItem('nuxt-ui-font')
+
+  appConfig.theme.icons = 'lucide'
+  appConfig.ui.icons = themeIcons.lucide as any
   window.localStorage.removeItem('nuxt-ui-icons')
+
+  appConfig.theme.blackAsPrimary = false
   window.localStorage.removeItem('nuxt-ui-black-as-primary')
 }
 </script>
 
 <template>
-  <UPopover :ui="{ content: 'w-72 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
-    <template #default="{ open }">
+  <UPopover v-model:open="open" :ui="{ content: 'w-72 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
+    <template #default>
       <UButton
         icon="i-lucide-swatch-book"
         color="neutral"
