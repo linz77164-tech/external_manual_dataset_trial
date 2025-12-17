@@ -278,7 +278,7 @@ exports[`DashboardSidebar > renders with resizable correctly 1`] = `
     <div data-slot="body" class="flex flex-col gap-4 flex-1 overflow-y-auto px-4 py-2"></div>
     <!--v-if-->
   </div>
-  <div role="separator" class="hidden lg:block touch-none select-none cursor-ew-resize relative before:absolute before:inset-y-0 before:-left-1.5 before:-right-1.5" aria-controls="dashboard-sidebar-v-0" data-slot="handle"></div>
+  <div role="separator" class="hidden lg:block touch-none select-none cursor-ew-resize relative before:absolute before:inset-y-0 before:-left-1.5 before:-right-1.5 before:z-1" aria-controls="dashboard-sidebar-v-0" data-slot="handle"></div>
   <!--v-if-->
   <!--teleport start-->
   <!--teleport end-->
