@@ -20,7 +20,7 @@ export interface EditorMentionMenuItem {
   [key: string]: any
 }
 
-export interface EditorMentionMenuProps<T extends EditorMentionMenuItem = EditorMentionMenuItem> extends Partial<Pick<EditorMenuOptions<T>, 'editor' | 'char' | 'pluginKey' | 'filterFields' | 'limit' | 'options' | 'appendTo'>> {
+export interface EditorMentionMenuProps<T extends EditorMentionMenuItem = EditorMentionMenuItem> extends Partial<Pick<EditorMenuOptions<T>, 'editor' | 'char' | 'pluginKey' | 'filterFields' | 'limit' | 'options' | 'appendTo' | 'ignoreFilter'>> {
   /**
    * @defaultValue 'md'
    */
@@ -46,6 +46,8 @@ const props = withDefaults(defineProps<EditorMentionMenuProps<T>>(), {
   char: '@'
 })
 
+const searchTerm = defineModel<string>('searchTerm', { default: '' })
+
 const appConfig = useAppConfig() as EditorMentionMenu['AppConfig']
 
 const ui = computed(() => tv({ extend: tv(theme), ...(appConfig.ui?.editorMentionMenu || {}) })({
@@ -67,9 +69,11 @@ onMounted(async () => {
     pluginKey: props.pluginKey,
     items: toRef(() => props.items),
     filterFields: props.filterFields,
+    ignoreFilter: props.ignoreFilter,
     limit: props.limit,
     options: props.options,
     appendTo: props.appendTo,
+    searchTerm,
     ui,
     onSelect: (editor, range, item) => {
       // Delete the trigger character and query text, then insert the mention
