@@ -281,7 +281,7 @@ props:
 ---
 ::
 
-### Size :badge{label="Soon" class="align-text-top"}
+### Size :badge{label="4.4+" class="align-text-top"}
 
 Use the `size` prop to change the size of the CommandPalette.
 
