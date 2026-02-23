@@ -15,7 +15,7 @@ function fireKeydown(key: string, options: Partial<KeyboardEventInit> = {}) {
 }
 
 describe('defineShortcuts', () => {
-  let wrapper: ReturnType<typeof mountSuspended> extends Promise<infer T> ? T : never
+  let wrapper: Awaited<ReturnType<typeof mountSuspended>>
 
   afterEach(() => {
     wrapper?.unmount()
@@ -108,7 +108,7 @@ describe('defineShortcuts', () => {
 
     it('triggers $ shortcut when pressing Shift+4', async () => {
       const handler = vi.fn()
-      await registerShortcuts({ '$': handler })
+      await registerShortcuts({ $: handler })
 
       fireKeydown('$', { shiftKey: true })
       expect(handler).toHaveBeenCalledOnce()
@@ -392,7 +392,7 @@ describe('defineShortcuts', () => {
 
     it('handles underscore key as standalone shortcut', async () => {
       const handler = vi.fn()
-      await registerShortcuts({ '_': handler })
+      await registerShortcuts({ _: handler })
 
       fireKeydown('_', { shiftKey: true })
       expect(handler).toHaveBeenCalledOnce()
@@ -442,7 +442,7 @@ describe('defineShortcuts', () => {
 
     it('1 does NOT trigger when pressing Shift+1 (produces !)', async () => {
       const handler = vi.fn()
-      await registerShortcuts({ '1': handler })
+      await registerShortcuts({ 1: handler })
 
       fireKeydown('!', { shiftKey: true })
       expect(handler).not.toHaveBeenCalled()
