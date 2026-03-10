@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kopijuoti kodą į iškarpinę'
       }
     },
+    sidebar: {
+      close: 'Uždaryti',
+      toggle: 'Perjungti'
+    },
     selectMenu: {
       create: 'Sukurti „{label}"',
       noData: 'Nėra duomenų',

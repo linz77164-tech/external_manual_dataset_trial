@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kopiraj kod u međuspremnik'
       }
     },
+    sidebar: {
+      close: 'Zatvori',
+      toggle: 'Prebaci'
+    },
     selectMenu: {
       create: 'Stvori "{label}"',
       noData: 'Nema podataka',

@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kopier kode til utklippstavle'
       }
     },
+    sidebar: {
+      close: 'Lukk',
+      toggle: 'Veksle'
+    },
     selectMenu: {
       create: 'Opprett "{label}"',
       noData: 'Ingen data',

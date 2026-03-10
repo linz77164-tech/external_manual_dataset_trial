@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Պատճենել կոդը սեղմատախտակին'
       }
     },
+    sidebar: {
+      close: 'Փակել',
+      toggle: 'Փոխարկել'
+    },
     selectMenu: {
       create: 'Ստեղծել "{label}"',
       noData: 'Տվյալներ չկան',

@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Копирай кода в клипборда'
       }
     },
+    sidebar: {
+      close: 'Затворете',
+      toggle: 'Превключване'
+    },
     selectMenu: {
       create: 'Създайте "{label}"',
       noData: 'Няма данни',

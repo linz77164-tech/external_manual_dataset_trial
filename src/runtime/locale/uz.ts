@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Koddan buferga nusxa olish'
       }
     },
+    sidebar: {
+      close: 'Yopish',
+      toggle: 'Almashtirish'
+    },
     selectMenu: {
       create: '"{label}" yaratish',
       noData: 'Maʼlumot yoʻq',

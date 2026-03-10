@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kodu buferə kopyala'
       }
     },
+    sidebar: {
+      close: 'Bağla',
+      toggle: 'Dəyişdir'
+    },
     selectMenu: {
       create: '"{label}" yarat',
       noData: 'Məlumat yoxdur',

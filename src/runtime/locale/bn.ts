@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'কোড ক্লিপবোর্ডে কপি করুন'
       }
     },
+    sidebar: {
+      close: 'বন্ধ করুন',
+      toggle: 'টগল করুন'
+    },
     selectMenu: {
       create: '"{label}" তৈরি করুন',
       noData: 'কোন তথ্য নেই',

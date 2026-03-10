@@ -117,6 +117,10 @@ export default defineLocale<Messages>({
         copy: 'کپی کد در کلیپ‌بورد'
       }
     },
+    sidebar: {
+      close: 'بستن',
+      toggle: 'تغییر وضعیت'
+    },
     selectMenu: {
       create: 'ایجاد "{label}"',
       noData: 'داده‌ای موجود نیست',

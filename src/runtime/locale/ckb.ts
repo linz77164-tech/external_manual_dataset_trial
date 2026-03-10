@@ -117,6 +117,10 @@ export default defineLocale<Messages>({
         copy: 'لەبەرگرتنەوەی کۆد'
       }
     },
+    sidebar: {
+      close: 'داخستن',
+      toggle: 'گۆڕین'
+    },
     selectMenu: {
       create: '"{label}" زیادکردنی',
       noData: 'هیچ داتایەک نییە',

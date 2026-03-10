@@ -117,6 +117,10 @@ export default defineLocale<Messages>({
         copy: 'העתק קוד ללוח'
       }
     },
+    sidebar: {
+      close: 'סגור',
+      toggle: 'החלף'
+    },
     selectMenu: {
       create: 'צור "{label}"',
       noData: 'אין נתונים',

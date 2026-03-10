@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kopeeri kood lõikelauale'
       }
     },
+    sidebar: {
+      close: 'Sulge',
+      toggle: 'Lülita'
+    },
     selectMenu: {
       create: 'Loo "{label}"',
       noData: 'Pole andmeid',

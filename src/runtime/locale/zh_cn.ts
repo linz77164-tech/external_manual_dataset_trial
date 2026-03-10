@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: '复制代码到剪贴板'
       }
     },
+    sidebar: {
+      close: '关闭',
+      toggle: '切换'
+    },
     selectMenu: {
       create: '创建 "{label}"',
       noData: '没有数据',

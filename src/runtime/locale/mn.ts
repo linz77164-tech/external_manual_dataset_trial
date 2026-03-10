@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Кодыг санах ойд хуулах'
       }
     },
+    sidebar: {
+      close: 'Хаах',
+      toggle: 'Сэлгэх'
+    },
     selectMenu: {
       create: '"{label}" үүсгэх',
       noData: 'Мэдээлэл байхгүй',

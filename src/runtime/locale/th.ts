@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'คัดลอกโค้ดไปยังคลิปบอร์ด'
       }
     },
+    sidebar: {
+      close: 'ปิด',
+      toggle: 'สลับ'
+    },
     selectMenu: {
       create: 'สร้าง "{label}"',
       noData: 'ไม่มีข้อมูล',

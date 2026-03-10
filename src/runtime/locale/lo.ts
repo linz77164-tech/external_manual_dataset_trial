@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'ຄັດລອກໂຄ້ດ'
       }
     },
+    sidebar: {
+      close: 'ປິດ',
+      toggle: 'ສະລັບ'
+    },
     selectMenu: {
       create: 'ສ້າງ "{label}"',
       noData: 'ບໍ່ມີຂໍ້ມູນ',

@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Kód másolása a vágólapra'
       }
     },
+    sidebar: {
+      close: 'Bezárás',
+      toggle: 'Váltás'
+    },
     selectMenu: {
       create: '"{label}" létrehozása',
       noData: 'Nincs adat',

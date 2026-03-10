@@ -117,6 +117,10 @@ export default defineLocale<Messages>({
         copy: 'كۆچۈرۈش'
       }
     },
+    sidebar: {
+      close: 'تاقاش',
+      toggle: 'ئالماشتۇرۇش'
+    },
     selectMenu: {
       create: '"{label}" نى قۇرۇش',
       noData: 'سانلىق مەلۇمات يوق',

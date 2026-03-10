@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Copiază codul în clipboard'
       }
     },
+    sidebar: {
+      close: 'Închide',
+      toggle: 'Comutare'
+    },
     selectMenu: {
       create: 'Creează "{label}"',
       noData: 'Nu există date',

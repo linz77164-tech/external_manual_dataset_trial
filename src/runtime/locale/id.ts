@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Salin kode ke clipboard'
       }
     },
+    sidebar: {
+      close: 'Tutup',
+      toggle: 'Alihkan'
+    },
     selectMenu: {
       create: 'Buat "{label}"',
       noData: 'Tidak ada data',

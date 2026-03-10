@@ -116,6 +116,10 @@ export default defineLocale<Messages>({
         copy: 'Copiar código para a área de transferência'
       }
     },
+    sidebar: {
+      close: 'Fechar',
+      toggle: 'Alternar'
+    },
     selectMenu: {
       create: 'Criar "{label}"',
       noData: 'Nenhum dado',
