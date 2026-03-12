@@ -28,8 +28,8 @@ By the end of this tutorial, you'll have a fully functional AI chatbot with:
 - **Multi-model support** allowing users to switch between OpenAI, Anthropic, and Google models
 - **Server-side AI integration** using Nitro API routes and the AI SDK
 
-::callout{icon="i-simple-icons-github" to="https://github.com/nuxt-ui-templates/chat" target="_blank"}
-Check out the complete **AI Chat template** on GitHub for a production-ready implementation with authentication, database persistence, and more.
+::callout{icon="i-simple-icons-github"}
+Check out the [`Nuxt`](https://github.com/nuxt-ui-templates/chat){target="_blank"} and [`Vue`](https://github.com/nuxt-ui-templates/chat-vue){target="_blank"} AI Chat templates on GitHub for production-ready implementations with authentication, database persistence, and more.
 ::
 
 ## Prerequisites
@@ -479,7 +479,7 @@ The chat page is where the actual conversation happens. It integrates the AI SDK
 <script setup lang="ts">
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart } from 'ai'
 import { Chat } from '@ai-sdk/vue'
-import { isStreamingPart } from '@nuxt/ui/utils/ai'
+import { isReasoningStreaming } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
@@ -546,8 +546,14 @@ onMounted(() => {
               <UChatReasoning
                 v-if="isReasoningUIPart(part)"
                 :text="part.text"
-                :streaming="isStreamingPart(message, index, chat)"
-              />
+                :streaming="isReasoningStreaming(message, index, chat)"
+              >
+                <MDC
+                  :value="part.text"
+                  :cache-key="`reasoning-${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+              </UChatReasoning>
 
               <MDC
                 v-else-if="isTextUIPart(part)"
@@ -605,7 +611,7 @@ The [`UChatMessages`](/docs/components/chat-messages) component is purpose-built
 
 **Rendering Markdown with MDC**
 
-AI models often respond with Markdown formatting (code blocks, lists, bold text, etc.). We iterate over message `parts` using AI SDK helpers like `isTextUIPart` and `isReasoningUIPart`, rendering text with the [`MDC`](https://github.com/nuxt-content/mdc#mdc) component from [`@nuxtjs/mdc`](https://github.com/nuxt-content/mdc) and reasoning with [`UChatReasoning`](/docs/components/chat-reasoning). The `isStreamingPart` utility from `@nuxt/ui/utils/ai` detects if a part is currently being streamed.
+AI models often respond with Markdown formatting (code blocks, lists, bold text, etc.). We iterate over message `parts` using AI SDK helpers like `isTextUIPart` and `isReasoningUIPart`, rendering text with the [`MDC`](https://github.com/nuxt-content/mdc#mdc) component from [`@nuxtjs/mdc`](https://github.com/nuxt-content/mdc) and reasoning with [`UChatReasoning`](/docs/components/chat-reasoning). The `isReasoningStreaming` utility from `@nuxt/ui/utils/ai` detects if a reasoning part is currently being streamed.
 
 ::note{to="/docs/typography"}
 Nuxt UI provides pre-styled prose components, so your markdown content will be automatically styled to match your theme.
@@ -752,7 +758,7 @@ async function createChat() {
 <script setup lang="ts">
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart } from 'ai'
 import { Chat } from '@ai-sdk/vue'
-import { isStreamingPart } from '@nuxt/ui/utils/ai'
+import { isReasoningStreaming } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
@@ -822,8 +828,14 @@ onMounted(() => {
               <UChatReasoning
                 v-if="isReasoningUIPart(part)"
                 :text="part.text"
-                :streaming="isStreamingPart(message, index, chat)"
-              />
+                :streaming="isReasoningStreaming(message, index, chat)"
+              >
+                <MDC
+                  :value="part.text"
+                  :cache-key="`reasoning-${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+              </UChatReasoning>
 
               <MDC
                 v-else-if="isTextUIPart(part)"
@@ -928,7 +940,7 @@ Update the chat page to include the model selector and pass the selected model t
 <script setup lang="ts">
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart } from 'ai'
 import { Chat } from '@ai-sdk/vue'
-import { isStreamingPart } from '@nuxt/ui/utils/ai'
+import { isReasoningStreaming } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
@@ -998,8 +1010,14 @@ onMounted(() => {
               <UChatReasoning
                 v-if="isReasoningUIPart(part)"
                 :text="part.text"
-                :streaming="isStreamingPart(message, index, chat)"
-              />
+                :streaming="isReasoningStreaming(message, index, chat)"
+              >
+                <MDC
+                  :value="part.text"
+                  :cache-key="`reasoning-${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+              </UChatReasoning>
 
               <MDC
                 v-else-if="isTextUIPart(part)"
@@ -1066,10 +1084,6 @@ const weatherTool = tool({
 })
 ```
 
-::callout{icon="i-lucide-rocket" to="https://github.com/nuxt-ui-templates/chat" target="_blank"}
-The official **AI Chat template** includes all these features and more. Get started instantly with `npx nuxi@latest init -t ui/chat my-chat-app`.
-::
-
 ## Deploying to Vercel
 
 Deploy your chatbot to Vercel with zero configuration:
@@ -1103,10 +1117,11 @@ The combination of Nuxt's full-stack capabilities, Nuxt UI's purpose-built chat 
 
 **Resources:**
 
-- [Nuxt UI Chat Components](https://ui.nuxt.com/components/chat-messages)
+- [Nuxt UI Chat Components](https://ui.nuxt.com/components/chat)
 - [NuxtHub Database](https://hub.nuxt.com/docs/features/database)
 - [AI SDK Documentation](https://ai-sdk.dev)
 - [AI Gateway Documentation](https://vercel.com/docs/ai-gateway)
-- [AI Chat Template](https://github.com/nuxt-ui-templates/chat)
+- [Nuxt AI Chat Template](https://github.com/nuxt-ui-templates/chat)
+- [Vue AI Chat Template](https://github.com/nuxt-ui-templates/chat-vue)
 
 We're excited to see what you'll build!
