@@ -167,7 +167,7 @@ const previewOptions = {
     '<style>#app { isolation: isolate; }</style>'
   ].join(''),
   customCode: {
-    importCode: `import ui, { useToast, useOverlay, defineShortcuts } from '@nuxt/ui'\nimport { h } from 'vue'\nwindow.useToast = useToast\nwindow.useOverlay = useOverlay\nwindow.defineShortcuts = defineShortcuts`,
+    importCode: `import ui, { useToast, useOverlay, defineShortcuts, extractShortcuts } from '@nuxt/ui'\nimport { h } from 'vue'\nwindow.useToast = useToast\nwindow.useOverlay = useOverlay\nwindow.defineShortcuts = defineShortcuts\nwindow.extractShortcuts = extractShortcuts`,
     useCode: `app.use(ui)\napp.component('Placeholder', { template: '<div class="relative overflow-hidden rounded-sm border border-dashed border-accented opacity-75 px-4 flex items-center justify-center"><svg class="absolute inset-0 size-full stroke-inverted/10" fill="none"><defs><pattern id="placeholder-pattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M-3 13 15-5M-5 5l18-18M-1 21 17 3" /></pattern></defs><rect stroke="none" fill="url(#placeholder-pattern)" width="100%" height="100%" /></svg><slot /></div>' })\nconst _Root = app._component\nconst _UApp = app.component('UApp')\nconst _origMount = app.mount\napp.mount = function(el) {\n  const wrapper = _createApp({ render() { return h(_UApp, null, { default: () => h(_Root) }) } })\n  Object.assign(wrapper._context.components, app._context.components)\n  Object.assign(wrapper._context.directives, app._context.directives)\n  Object.assign(wrapper._context.provides, app._context.provides)\n  wrapper.config.errorHandler = e => console.error(e)\n  wrapper.mount(el)\n  window.__app__ = wrapper\n}`
   }
 }
