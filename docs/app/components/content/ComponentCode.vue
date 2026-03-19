@@ -365,6 +365,14 @@ const code = computed(() => {
   return nuxtCode
 })
 
+const playgroundUrl = computed(() => {
+  if (props.prose) return null
+  const rawMarkdown = buildCode()
+  const vueMarkdown = addVueImports(rawMarkdown)
+  const match = vueMarkdown.match(/```vue[^\n]*\n([\s\S]*?)\n```/)
+  return match?.[1] ? getPlaygroundUrl(match[1].trim()) : null
+})
+
 const codeKey = computed(() => `component-code-${name}-${hash(props)}`)
 
 const wrapperContainer = ref<HTMLElement | null>(null)
@@ -453,6 +461,19 @@ const { data: ast } = useAsyncData(codeKey, async () => {
       </div>
 
       <ClientOnly>
+        <UTooltip v-if="playgroundUrl" text="Open in playground" :content="{ side: 'right' }">
+          <UButton
+            :to="playgroundUrl"
+            target="_blank"
+            icon="i-lucide-play"
+            color="neutral"
+            variant="outline"
+            size="sm"
+            class="absolute -bottom-[13px] -right-[13px] z-1 rounded-full lg:opacity-0 lg:group-hover/component:opacity-100 ring-muted transition-opacity duration-200"
+            aria-label="Open in playground"
+          />
+        </UTooltip>
+
         <LazyComponentThemeVisualizer
           :container="componentContainer"
           :position-container="wrapperContainer"

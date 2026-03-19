@@ -162,6 +162,12 @@ const optionsValues = ref(props.options?.reduce((acc, option) => {
   return acc
 }, {} as Record<string, any>) || {})
 
+const playgroundUrl = computed(() => {
+  const rawCode = data.value?.code
+  if (!rawCode) return null
+  return getPlaygroundUrl(addVueImports(rawCode))
+})
+
 const urlSearchParams = computed(() => {
   const params = {
     ...optionsValues.value,
@@ -246,6 +252,19 @@ const urlSearchParams = computed(() => {
         </div>
 
         <ClientOnly>
+          <UTooltip v-if="playgroundUrl" text="Open in playground" :content="{ side: 'right' }">
+            <UButton
+              :to="playgroundUrl"
+              target="_blank"
+              icon="i-lucide-play"
+              color="neutral"
+              variant="outline"
+              size="sm"
+              class="absolute -bottom-[13px] -right-[13px] z-1 rounded-full lg:opacity-0 lg:group-hover/component:opacity-100 ring-muted transition-opacity duration-200"
+              aria-label="Open in playground"
+            />
+          </UTooltip>
+
           <LazyComponentThemeVisualizer
             :container="componentContainer"
             :position-container="wrapperContainer"
