@@ -85,6 +85,7 @@ const wrapperContainer = ref<HTMLElement | null>(null)
 const componentContainer = ref<HTMLElement | null>(null)
 
 const { $prettier } = useNuxtApp()
+const { framework } = useFrameworks()
 const { width } = useElementSize(el)
 
 const camelName = camelCase(props.name)
@@ -105,8 +106,10 @@ const code = computed(() => {
 `
   }
 
+  const source = framework.value === 'vue' && props.lang === 'vue' ? addVueImports(data.value?.code ?? '') : (data.value?.code ?? '')
+
   code += `\`\`\`${props.lang} ${props.preview ? '' : ` [${props.filename ?? data.value?.pascalName}.${props.lang}]`}${props.highlights?.length ? `{${props.highlights.join('-')}}` : ''}
-${data.value?.code ?? ''}
+${source}
 \`\`\``
 
   if (props.collapse) {
