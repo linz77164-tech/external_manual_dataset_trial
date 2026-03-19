@@ -2,7 +2,11 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue'
 import { Repl, useStore, useVueImportMap } from '@vue/repl'
+import { useColorMode } from '@vueuse/core'
 import CodeMirror from '@vue/repl/codemirror-editor'
+
+const colorMode = useColorMode()
+const theme = computed(() => colorMode.value === 'dark' ? 'dark' : 'light')
 
 const {
   importMap: vueImportMap,
@@ -17,7 +21,11 @@ const builtinImportMap = computed(() => ({
   imports: {
     ...vueImportMap.value.imports,
     '@nuxt/ui': '/nuxt-ui.js',
-    'zod': 'https://esm.sh/zod@4?external=vue'
+    'zod': 'https://esm.sh/zod@4?external=vue',
+    '@vueuse/core': 'https://esm.sh/@vueuse/core?external=vue',
+    '@tanstack/vue-table': 'https://esm.sh/@tanstack/vue-table?external=vue',
+    '@internationalized/date': 'https://esm.sh/@internationalized/date',
+    'scule': 'https://esm.sh/scule'
   }
 }))
 
@@ -76,67 +84,76 @@ const state = reactive<Partial<Schema>>({
 <\/script>
 
 <template>
-  <UApp>
-    <div class="min-h-screen p-4 sm:p-6 lg:p-8 flex flex-col justify-center antialiased font-sans isolate">
-      <UCard class="max-w-md mx-auto" variant="subtle">
-        <UForm :schema="schema" :state="state" class="space-y-6">
-          <UPageCard title="Payment method" description="All transactions are secure and encrypted" variant="naked" />
+  <div class="min-h-screen p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+    <UCard class="max-w-md mx-auto" variant="subtle">
+      <UForm :schema="schema" :state="state" class="space-y-6">
+        <UPageCard title="Payment method" description="All transactions are secure and encrypted" variant="naked" />
 
-          <UFormField name="name" label="Name" required>
-            <UInput v-model="state.name" placeholder="John Doe" class="w-full" />
+        <UFormField name="name" label="Name" required>
+          <UInput v-model="state.name" placeholder="John Doe" class="w-full" />
+        </UFormField>
+
+        <div class="grid grid-cols-3 gap-4">
+          <UFormField name="cardNumber" label="Card number" help="Enter your 16-digit number." required class="col-span-2">
+            <UInput v-model="state.cardNumber" placeholder="1234 5678 9012 3456" class="w-full" />
           </UFormField>
 
-          <div class="grid grid-cols-3 gap-4">
-            <UFormField name="cardNumber" label="Card number" help="Enter your 16-digit number." required class="col-span-2">
-              <UInput v-model="state.cardNumber" placeholder="1234 5678 9012 3456" class="w-full" />
-            </UFormField>
+          <UFormField name="cvv" label="CVV" required>
+            <UInput v-model="state.cvv" placeholder="123" class="w-full" />
+          </UFormField>
+        </div>
 
-            <UFormField name="cvv" label="CVV" required>
-              <UInput v-model="state.cvv" placeholder="123" class="w-full" />
-            </UFormField>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField name="month" label="Month" required>
-              <USelect v-model="state.month" :items="months" placeholder="MM" value-key="value" class="w-full" />
-            </UFormField>
-
-            <UFormField name="year" label="Year" required>
-              <USelect v-model="state.year" :items="years" placeholder="YYYY" value-key="value" class="w-full" />
-            </UFormField>
-          </div>
-
-          <USeparator />
-
-          <UPageCard title="Billing address" description="The billing address associated with your payment method" variant="naked" />
-
-          <UFormField name="sameAsShipping">
-            <UCheckbox v-model="state.sameAsShipping" label="Same as shipping address" color="neutral" />
+        <div class="grid grid-cols-2 gap-4">
+          <UFormField name="month" label="Month" required>
+            <USelect v-model="state.month" :items="months" placeholder="MM" value-key="value" class="w-full" />
           </UFormField>
 
-          <USeparator />
-
-          <UFormField name="comments" label="Comments">
-            <UTextarea v-model="state.comments" placeholder="Add any additional comments" :rows="3" class="w-full" />
+          <UFormField name="year" label="Year" required>
+            <USelect v-model="state.year" :items="years" placeholder="YYYY" value-key="value" class="w-full" />
           </UFormField>
+        </div>
 
-          <div class="flex gap-3">
-            <UButton type="submit" color="neutral" label="Submit" />
-            <UButton type="button" label="Cancel" color="neutral" variant="outline" />
-          </div>
-        </UForm>
-      </UCard>
-    </div>
-  </UApp>
+        <USeparator />
+
+        <UPageCard title="Billing address" description="The billing address associated with your payment method" variant="naked" />
+
+        <UFormField name="sameAsShipping">
+          <UCheckbox v-model="state.sameAsShipping" label="Same as shipping address" color="neutral" />
+        </UFormField>
+
+        <USeparator />
+
+        <UFormField name="comments" label="Comments">
+          <UTextarea v-model="state.comments" placeholder="Add any additional comments" :rows="3" class="w-full" />
+        </UFormField>
+
+        <div class="flex gap-3">
+          <UButton type="submit" color="neutral" label="Submit" />
+          <UButton type="button" label="Cancel" color="neutral" variant="outline" />
+        </div>
+      </UForm>
+    </UCard>
+  </div>
 </template>`
 
-if (!location.hash) {
+const hasInitialHash = !!location.hash
+
+if (!hasInitialHash) {
   store.setFiles({
     'src/App.vue': defaultCode
   }, 'src/App.vue')
 }
 
-watchEffect(() => history.replaceState({}, '', store.serialize()))
+watchEffect(() => {
+  const serialized = store.serialize()
+  if (!hasInitialHash && store.getFiles()['App.vue']?.trimEnd() === defaultCode.trimEnd()) {
+    if (location.hash) {
+      history.replaceState({}, '', location.pathname)
+    }
+    return
+  }
+  history.replaceState({}, '', serialized)
+})
 
 const previewOptions = {
   headHTML: [
@@ -145,11 +162,13 @@ const previewOptions = {
     '<link rel="preconnect" href="https://fonts.bunny.net">',
     '<link href="https://fonts.bunny.net/css?family=public-sans:400,500,600,700" rel="stylesheet">',
     '<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>',
-    '<style type="text/tailwindcss">@theme { --font-sans: \'Public Sans\', sans-serif; }</style>'
+    '<style type="text/tailwindcss">@theme { --font-sans: \'Public Sans\', sans-serif; }</style>',
+    '<style>body { font-family: var(--font-sans); }</style>',
+    '<style>#app { isolation: isolate; }</style>'
   ].join(''),
   customCode: {
-    importCode: 'import ui from \'@nuxt/ui\'',
-    useCode: 'app.use(ui)'
+    importCode: `import ui, { useToast, useOverlay, defineShortcuts } from '@nuxt/ui'\nimport { h } from 'vue'\nwindow.useToast = useToast\nwindow.useOverlay = useOverlay\nwindow.defineShortcuts = defineShortcuts`,
+    useCode: `app.use(ui)\napp.component('Placeholder', { template: '<div class="relative overflow-hidden rounded-sm border border-dashed border-accented opacity-75 px-4 flex items-center justify-center"><svg class="absolute inset-0 size-full stroke-inverted/10" fill="none"><defs><pattern id="placeholder-pattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M-3 13 15-5M-5 5l18-18M-1 21 17 3" /></pattern></defs><rect stroke="none" fill="url(#placeholder-pattern)" width="100%" height="100%" /></svg><slot /></div>' })\nconst _Root = app._component\nconst _UApp = app.component('UApp')\nconst _origMount = app.mount\napp.mount = function(el) {\n  const wrapper = _createApp({ render() { return h(_UApp, null, { default: () => h(_Root) }) } })\n  Object.assign(wrapper._context.components, app._context.components)\n  Object.assign(wrapper._context.directives, app._context.directives)\n  Object.assign(wrapper._context.provides, app._context.provides)\n  wrapper.config.errorHandler = e => console.error(e)\n  wrapper.mount(el)\n  window.__app__ = wrapper\n}`
   }
 }
 </script>
@@ -181,6 +200,8 @@ const previewOptions = {
       <Repl
         :store="store"
         :editor="CodeMirror"
+        :theme="theme"
+        preview-theme
         :show-compile-output="false"
         :show-ts-config="false"
         :show-import-map="false"
@@ -193,6 +214,11 @@ const previewOptions = {
 </template>
 
 <style>
+.iframe-container,
+.iframe-container iframe {
+  background-color: var(--ui-bg) !important;
+}
+
 .vue-repl,
 .dark .vue-repl {
   --bg: var(--ui-bg);

@@ -18,3 +18,7 @@ export function install(app: App) {
 }
 
 export default { install }
+
+export { useToast } from '../../../src/runtime/composables/useToast'
+export { useOverlay } from '../../../src/runtime/composables/useOverlay'
+export { defineShortcuts } from '../../../src/runtime/composables/defineShortcuts'
