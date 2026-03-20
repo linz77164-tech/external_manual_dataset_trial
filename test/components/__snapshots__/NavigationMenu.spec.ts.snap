@@ -1052,7 +1052,7 @@ exports[`NavigationMenu > renders with orientation vertical correctly 1`] = `
       <!--v-if-->
       <!--v-if-->
     </li>
-    <li data-state="closed" data-orientation="vertical" data-slot="item" class="min-w-0"><button type="button" disabled="" data-reka-collection-item="" data-slot="link" class="group relative w-full flex items-center gap-1.5 font-medium text-sm before:absolute before:z-[-1] before:rounded-md focus:outline-none focus-visible:outline-none dark:focus-visible:outline-none focus-visible:before:ring-inset focus-visible:before:ring-2 focus-visible:before:ring-primary flex-row px-2.5 py-1.5 before:inset-y-px before:inset-x-0 text-muted cursor-not-allowed opacity-75"><span class="iconify i-lucide:circle-help shrink-0 size-5 text-dimmed" aria-hidden="true" data-slot="linkLeadingIcon"></span><span data-slot="linkLabel" class="truncate">Help<!--v-if--></span>
+    <li data-state="closed" data-disabled="" data-orientation="vertical" data-slot="item" class="min-w-0"><button type="button" disabled="" data-reka-collection-item="" data-slot="link" class="group relative w-full flex items-center gap-1.5 font-medium text-sm before:absolute before:z-[-1] before:rounded-md focus:outline-none focus-visible:outline-none dark:focus-visible:outline-none focus-visible:before:ring-inset focus-visible:before:ring-2 focus-visible:before:ring-primary flex-row px-2.5 py-1.5 before:inset-y-px before:inset-x-0 text-muted cursor-not-allowed opacity-75"><span class="iconify i-lucide:circle-help shrink-0 size-5 text-dimmed" aria-hidden="true" data-slot="linkLeadingIcon"></span><span data-slot="linkLabel" class="truncate">Help<!--v-if--></span>
         <!--v-if-->
       </button>
       <!--v-if-->
