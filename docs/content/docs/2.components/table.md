@@ -314,7 +314,7 @@ class: '!p-0'
 ---
 ::
 
-### With row pinning :badge{label="Soon" class="align-text-top"}
+### With row pinning :badge{label="4.6+" class="align-text-top"}
 
 You can add a column that renders a [Button](/docs/components/button) component inside the `cell` to toggle the pinning state of a row using the TanStack Table [Row Pinning APIs](https://tanstack.com/table/latest/docs/api/features/row-pinning). Pinned rows will stay at the top or bottom of the table regardless of sorting or filtering.
 
