@@ -27,7 +27,10 @@ describe('ChatMessage', () => {
     ['with class', { props: { ...props, class: '' } }],
     ['with ui', { props: { ...props, ui: {} } }],
     // Slots
-    ['with content slot', { props, slots: { content: () => 'Content slot' } }]
+    ['with leading slot', { props, slots: { leading: () => 'Leading slot' } }],
+    ['with files slot', { props, slots: { files: () => 'Files slot' } }],
+    ['with content slot', { props, slots: { content: () => 'Content slot' } }],
+    ['with actions slot', { props, slots: { actions: () => 'Actions slot' } }]
   ])
 
   it('passes accessibility tests', async () => {
