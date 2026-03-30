@@ -555,12 +555,17 @@ onMounted(() => {
                 />
               </UChatReasoning>
 
-              <MDC
-                v-else-if="isTextUIPart(part)"
-                :value="part.text"
-                :cache-key="`${message.id}-${index}`"
-                class="*:first:mt-0 *:last:mb-0"
-              />
+              <template v-else-if="isTextUIPart(part)">
+                <MDC
+                  v-if="message.role === 'assistant'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+                <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
+                  {{ part.text }}
+                </p>
+              </template>
             </template>
           </template>
         </UChatMessages>
@@ -837,12 +842,17 @@ onMounted(() => {
                 />
               </UChatReasoning>
 
-              <MDC
-                v-else-if="isTextUIPart(part)"
-                :value="part.text"
-                :cache-key="`${message.id}-${index}`"
-                class="*:first:mt-0 *:last:mb-0"
-              />
+              <template v-else-if="isTextUIPart(part)">
+                <MDC
+                  v-if="message.role === 'assistant'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+                <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
+                  {{ part.text }}
+                </p>
+              </template>
             </template>
           </template>
         </UChatMessages>
@@ -1019,12 +1029,17 @@ onMounted(() => {
                 />
               </UChatReasoning>
 
-              <MDC
-                v-else-if="isTextUIPart(part)"
-                :value="part.text"
-                :cache-key="`${message.id}-${index}`"
-                class="*:first:mt-0 *:last:mb-0"
-              />
+              <template v-else-if="isTextUIPart(part)">
+                <MDC
+                  v-if="message.role === 'assistant'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  class="*:first:mt-0 *:last:mb-0"
+                />
+                <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
+                  {{ part.text }}
+                </p>
+              </template>
             </template>
           </template>
         </UChatMessages>
