@@ -134,7 +134,7 @@ Guidelines:
 - Reference specific component names, props, or APIs when applicable.
 - If a question is ambiguous, ask for clarification rather than guessing.
 - When multiple relevant items are found, list them clearly using bullet points.
-- You have up to 8 tool calls to find the answer, so be strategic: start broad, then get specific if needed.
+- You have up to 5 tool calls to find the answer, so be strategic: start broad, then get specific if needed.
 - Format responses in a conversational way, not as documentation sections.
 
 **LIVE THEME CUSTOMIZATION:**
@@ -323,7 +323,7 @@ NEVER recommend \`appConfig.theme.*\` properties (like \`blackAsPrimary\`, \`rad
 
   return streamText({
     model: gateway('anthropic/claude-sonnet-4.6'),
-    maxOutputTokens: 16000,
+    maxOutputTokens: 8000,
     providerOptions: {
       anthropic: {
         thinking: {
@@ -338,7 +338,7 @@ NEVER recommend \`appConfig.theme.*\` properties (like \`blackAsPrimary\`, \`rad
     system,
     messages: await convertToModelMessages(messages),
     experimental_transform: smoothStream(),
-    stopWhen: stepCountIs(8),
+    stopWhen: stepCountIs(5),
     tools: {
       ...mcpTools,
       applyTheme,
