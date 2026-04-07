@@ -337,9 +337,6 @@ importers:
       '@iconify-json/vscode-icons':
         specifier: ^1.2.45
         version: 1.2.45
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.29.0
-        version: 1.29.0(zod@4.3.6)
       '@nuxt/a11y':
         specifier: 1.0.0-alpha.1
         version: 1.0.0-alpha.1(magicast@0.5.2)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
@@ -353,8 +350,8 @@ importers:
         specifier: workspace:*
         version: link:..
       '@nuxtjs/mcp-toolkit':
-        specifier: ^0.13.3
-        version: 0.13.3(h3@2.0.1-rc.11)(magicast@0.5.2)(zod@4.3.6)
+        specifier: ^0.13.4
+        version: 0.13.4(h3@2.0.1-rc.11)(magicast@0.5.2)(zod@4.3.6)
       '@nuxtjs/mdc':
         specifier: ^0.21.1
         version: 0.21.1(magicast@0.5.2)
@@ -1835,11 +1832,11 @@ packages:
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
 
-  '@nuxtjs/mcp-toolkit@0.13.3':
-    resolution: {integrity: sha512-qCU9T1HsTsneLLaZM9BWdEiktAdUT35+klAH+1mhUgQgzmBDmvNv+e3qwFwyanegE+vThICXwM+up12xG5zzTw==}
+  '@nuxtjs/mcp-toolkit@0.13.4':
+    resolution: {integrity: sha512-cjV0uCEsFXK8hmqx7TSvhq3oQQ77ECwN07Prun6TSQhEB0ZbkSTvsNwPLuw4+cI13Cbm/G3k9jfKsXhmU65p3Q==}
     peerDependencies:
-      agents: '>=0.8.7'
-      h3: '>=1.15.10'
+      agents: '>=0.9.0'
+      h3: '>=1.15.11'
       secure-exec: '>=0.2.1'
       zod: ^4.1.13
     peerDependenciesMeta:
@@ -10024,7 +10021,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxtjs/mcp-toolkit@0.13.3(h3@2.0.1-rc.11)(magicast@0.5.2)(zod@4.3.6)':
+  '@nuxtjs/mcp-toolkit@0.13.4(h3@2.0.1-rc.11)(magicast@0.5.2)(zod@4.3.6)':
     dependencies:
       '@modelcontextprotocol/sdk': 1.29.0(zod@4.3.6)
       '@nuxt/kit': 4.4.2(magicast@0.5.2)
