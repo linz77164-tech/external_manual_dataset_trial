@@ -13,7 +13,7 @@ const items = [
     label: 'Copy Markdown link',
     icon: 'i-lucide-link',
     onSelect() {
-      track('Page Action', { action: 'Copy Markdown Link' })
+      track('Page Action', { action: 'Copy Markdown Link', page: route.path })
       copy(mdPath.value)
       toast.add({
         title: 'Copied to clipboard',
@@ -27,7 +27,7 @@ const items = [
     target: '_blank',
     to: `/raw${route.path}.md`,
     onSelect() {
-      track('Page Action', { action: 'View as Markdown' })
+      track('Page Action', { action: 'View as Markdown', page: route.path })
     }
   },
   {
@@ -36,7 +36,7 @@ const items = [
     target: '_blank',
     to: `https://chatgpt.com/?hints=search&q=${encodeURIComponent(`Read ${mdPath.value} so I can ask questions about it.`)}`,
     onSelect() {
-      track('Page Action', { action: 'Open in ChatGPT' })
+      track('Page Action', { action: 'Open in ChatGPT', page: route.path })
     }
   },
   {
@@ -45,13 +45,13 @@ const items = [
     target: '_blank',
     to: `https://claude.ai/new?q=${encodeURIComponent(`Read ${mdPath.value} so I can ask questions about it.`)}`,
     onSelect() {
-      track('Page Action', { action: 'Open in Claude' })
+      track('Page Action', { action: 'Open in Claude', page: route.path })
     }
   }
 ]
 
 async function copyPage() {
-  track('Page Action', { action: 'Copy Page' })
+  track('Page Action', { action: 'Copy Page', page: route.path })
   copy(await $fetch<string>(`/raw${route.path}.md`))
 }
 </script>
