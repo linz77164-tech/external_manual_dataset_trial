@@ -61,6 +61,7 @@ const components = [
   'page-links',
   'page-logos',
   'page-section',
+  'otp-input',
   'pagination',
   'pin-input',
   'popover',
