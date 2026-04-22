@@ -1,8 +1,8 @@
-# ISSUE: 新增 OTPInput 组件
+# Breadcrumb 组件增强 — 任务总结
 
 ## 任务背景
 
-为 Nuxt UI 组件库新增 `OTPInput` 组件，提供专用于一次性密码（One-Time Password）输入的交互体验。组件基于 Reka UI 的 `PinInput` 原语封装，默认 6 位数字输入，内置 OTP 自动填充、数字校验、自动焦点转移和完成回调。
+基于 Nuxt UI 仓库，对 `Breadcrumb` 面包屑组件进行全面功能增强，包括交互安全防护、折叠展示、分隔符定制、无障碍增强等多项改进。
 
 ---
 
@@ -10,196 +10,160 @@
 
 ### 新增文件
 
-| 文件路径 | 说明 |
-|----------|------|
-| `src/runtime/components/OTPInput.vue` | 核心组件源码 |
-| `src/theme/otp-input.ts` | Tailwind Variants 主题配置 |
-| `test/components/OTPInput.spec.ts` | 单元测试 |
-| `docs/content/docs/2.components/otp-input.md` | 组件文档 |
-| `playgrounds/nuxt/app/pages/components/otp-input.vue` | Playground 演示页面 |
+| 文件 | 说明 |
+|------|------|
+| `docs/content/docs/2.components/breadcrumb.md` | 完整组件文档（Separator String / Max Items 章节） |
+| `test/components/Breadcrumb.spec.ts` | 单元测试（含折叠、空数组、无障碍验证） |
 
 ### 修改文件
 
-| 文件路径 | 修改内容 |
-|----------|----------|
-| `src/runtime/types/index.ts` | 新增 `export * from '../components/OTPInput.vue'` |
-| `src/theme/index.ts` | 新增 `export { default as otpInput } from './otp-input'` |
-| `playgrounds/nuxt/app/composables/useNavigation.ts` | 侧边栏导航数组中添加 `'otp-input'` |
-| `playgrounds/nuxt/app/pages/index.vue` | 首页临时添加验证代码（提交前应还原） |
+| 文件 | 修改内容 |
+|------|----------|
+| `src/runtime/components/Breadcrumb.vue` | 核心逻辑重构：三重不可点击防护、折叠算法、separator 字符串、v-if 降级、aria 增强 |
+| `src/theme/breadcrumb.ts` | 新增 separatorLabel / ellipsisIcon slot、active 状态 pointer-events-none + cursor-default、hover 下划线增强、间距优化 |
 
 ---
 
 ## 核心代码解析
 
-### OTPInput.vue 实现架构
+### 1. 三重不可点击防护
 
-组件采用 Nuxt UI 标准的双 `<script>` 块结构：
-
-**`<script lang="ts">` — 类型定义层**
+确保面包屑最后一项（当前页面）绝对不可点击，即使开发者误设 `to` 属性：
 
 ```ts
-// 基于 Reka UI PinInputRootProps<'number'> 派生 Props
-export interface OTPInputProps extends Pick<PinInputRootProps<'number'>,
-  'defaultValue' | 'disabled' | 'id' | 'mask' | 'modelValue' |
-  'name' | 'placeholder' | 'required'> {
-  color?: OTPInput['variants']['color']      // 主题色，默认 'primary'
-  variant?: OTPInput['variants']['variant']  // 外观变体，默认 'outline'
-  size?: OTPInput['variants']['size']         // 尺寸，默认 'md'
-  length?: number | string                    // 输入框数量，默认 6
-  autofocus?: boolean                         // 自动聚焦首个输入框
-  autofocusDelay?: number                     // 自动聚焦延迟（毫秒）
-  highlight?: boolean                         // 高亮环色
-  fixed?: boolean                             // 保持移动端文字大小
-  ui?: OTPInput['slots']                      // 自定义样式槽位
-}
+// 第一重：逻辑层 — 剥离 to 属性
+pickLinkProps(active ? { ...item, to: undefined } : item)
 
-// 自定义 Emits，新增 complete 事件返回拼接字符串
-export type OTPInputEmits = PinInputRootEmits<'number'> & {
-  complete: [value: string]   // 所有格子填满时触发，如 "123456"
-  change: [event: Event]
-  blur: [event: FocusEvent]
-}
+// 第二重：样式层 — 禁用 + 禁止指针事件
+disabled: !!(item.disabled || isActive)
+to: isActive ? false : !!item.to
+
+// 第三重：CSS 层 — pointer-events-none + cursor-default
+active: { true: { link: 'text-primary font-semibold pointer-events-none cursor-default' } }
 ```
 
-**`<script setup lang="ts">` — 运行时逻辑层**
+### 2. 折叠算法（visibleItems computed）
 
-关键设计点：
-
-1. **OTP 模式硬编码**：模板中 `PinInputRoot` 始终设置 `type="number"` 和 `:otp="true"`，确保浏览器可自动识别并填充短信验证码。
-
-2. **三重数字校验**：
-   - Reka UI `type="number"` — 框架层过滤非数字字符
-   - `onKeydown` 正则拦截 — 在按键到达 input 前阻断非数字输入
-   - `inputmode="numeric"` + `pattern="[0-9]"` — 移动端弹出数字键盘
+当 `items.length > maxItems` 时，保留首尾项，中间替换为省略号：
 
 ```ts
-const OTP_DIGIT_REGEX = /^[0-9]$/
-
-function onKeydown(event: KeyboardEvent) {
-  // 放行功能键：Backspace, Delete, Tab, Escape, Enter, 方向键
-  if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
-        'ArrowLeft', 'ArrowRight'].includes(event.key)
-    || ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x'].includes(event.key))) {
-    return
+const visibleItems = computed(() => {
+  // 保底：2 项及以下不折叠
+  if (items.length <= 2 || !maxItems || items.length <= maxItems) {
+    return items.map(...)
   }
-  // 拦截非数字单字符
-  if (event.key.length === 1 && !OTP_DIGIT_REGEX.test(event.key)) {
-    event.preventDefault()
-  }
-}
+
+  // 首项保护：headCount >= 1
+  const headCount = Math.max(1, Math.ceil((max - 1) / 2))
+  const tailCount = Math.max(1, max - headCount)
+
+  return [...head, { type: 'overflow' }, ...tail]
+})
 ```
 
-3. **complete 事件**：Reka UI 的 `PinInputRoot` 在所有格子填满时触发 `complete` 事件，传入 `number[]`。组件将其拼接为字符串后发出：
+**关键设计决策：**
+- `maxItems` 不含省略项本身
+- `items.length <= 2` 强制不折叠（防御 max-items=1 误设）
+- 首项 `Math.max(1, ...)` 始终保留
+- 省略项通过 `#overflow` 插槽可自定义
 
-```ts
-function onComplete(value: number[]) {
-  completed.value = true
-  emits('complete', value.join(''))  // "123456"
-  emits('change', event)
-  emitFormChange()
-}
-```
+### 3. 分隔符增强
 
-4. **焦点管理**：
-   - 自动焦点转移：由 Reka UI `PinInputInput` 内置处理（输入完一个自动跳下一个）
-   - Backspace 回退：Reka UI 内置处理（当前格为空时按 Backspace 回退到前一格）
-   - `autofocus` + `autofocusDelay`：组件挂载后延迟聚焦首个输入框
+- **`separator` 字符串 prop**：`separator=">"` 替换默认图标，优先级高于 `separatorIcon`
+- **主题适配**：新增 `separatorLabel: 'text-muted text-sm'` slot
+- **间距优化**：`list` 从 `gap-1.5` 调整为 `gap-x-2.5 gap-y-1`，分隔符不再紧贴文字
 
-5. **表单集成**：通过 `useFormField` composable 集成 `UForm` 验证系统，支持 `emitFormInput`、`emitFormChange`、`emitFormBlur`。
-
-6. **主题系统**：通过 `useComponentUI` + `tv()` 实现 Tailwind Variants 响应式主题，支持 color / variant / size / highlight / fixed 五个变体维度。
-
-**`<template>` — 模板层**
+### 4. 空数组优雅降级
 
 ```html
-<PinInputRoot
-  v-bind="{ ...rootProps, ...ariaAttrs }"
-  type="number"
-  :otp="true"
-  @complete="onComplete"
->
-  <PinInputInput
-    v-for="(ids, index) in looseToNumber(props.length)"
-    :index="index"
-    inputmode="numeric"
-    pattern="[0-9]"
-    @keydown="onKeydown"
-  />
-</PinInputRoot>
+<Primitive v-if="items?.length" ...>
+```
+
+`items` 为空数组或 `undefined` 时，组件不渲染任何 DOM。
+
+### 5. SEO 与无障碍增强
+
+| 特性 | 实现 |
+|------|------|
+| `<nav aria-label="breadcrumb">` | Primitive 默认渲染为 `<nav>` |
+| `aria-current="page"` | 最后一项自动添加 |
+| 分隔符隐藏 | `role="presentation" aria-hidden="true"` |
+| 省略号标签 | `aria-label="显示更多路径"` |
+| 语义化结构 | `<ol>` + `<li>` 有序列表 |
+
+### 6. 交互体验优化
+
+- **非 active 可链接项**：hover 时颜色加深 + 下划线（`hover:text-default hover:underline underline-offset-4`）
+- **active 项**：`pointer-events-none` + `cursor-default`，悬停时保持默认箭头
+- **省略号图标**：默认 `i-lucide-ellipsis`，可通过 `ellipsisIcon` prop 或 `#overflow` 插槽自定义
+
+---
+
+## 主题配置最终版
+
+```ts
+// src/theme/breadcrumb.ts
+{
+  slots: {
+    root: 'relative min-w-0',
+    list: 'flex items-center gap-x-2.5 gap-y-1',
+    item: 'flex min-w-0',
+    link: 'group relative flex items-center gap-1.5 text-sm min-w-0 focus-visible:outline-primary',
+    linkLeadingIcon: 'shrink-0 size-5',
+    linkLeadingAvatar: 'shrink-0',
+    linkLeadingAvatarSize: '2xs',
+    linkLabel: 'truncate',
+    separator: 'flex',
+    separatorLabel: 'text-muted text-sm',       // 新增
+    separatorIcon: 'shrink-0 size-5 text-muted',
+    ellipsisIcon: 'shrink-0 size-5 text-muted'  // 新增
+  },
+  variants: {
+    active: {
+      true: { link: 'text-primary font-semibold pointer-events-none cursor-default' },
+      false: { link: 'text-muted font-medium' }
+    },
+    disabled: {
+      true: { link: 'cursor-not-allowed opacity-75' }
+    }
+  },
+  compoundVariants: [{
+    disabled: false, active: false, to: true,
+    class: { link: ['hover:text-default hover:underline underline-offset-4', transitions && 'transition-colors'] }
+  }]
+}
 ```
 
 ---
 
 ## 验证结果
 
-### Playground 验证
-
-在 `playgrounds/nuxt/app/pages/index.vue` 中添加了验证代码：
-
-```vue
-<UOTPInput :length="4" highlight placeholder="○" @complete="onComplete" />
-```
-
-**验证结果**：
-- ✅ 组件正常渲染 4 个输入框
-- ✅ 输入数字后自动跳转到下一个输入框
-- ✅ 输入非数字字符被拦截
-- ✅ 所有格子填满后触发 `complete` 事件，控制台打印 `OTP complete: 1234`
-- ✅ Backspace 清空当前格并回退焦点
-
-### 单元测试覆盖
-
-`test/components/OTPInput.spec.ts` 包含以下测试用例：
-
-| 测试类别 | 用例 |
-|----------|------|
-| 渲染 | 按 `length` 渲染对应数量输入框 |
-| 渲染 | 默认渲染 6 个输入框 |
-| 渲染 | `length=4` 渲染 4 个输入框 |
-| 快照 | 20+ 组 props/variants 的快照测试 |
-| 事件 | `complete` 事件返回拼接字符串 `"123456"` |
-| 事件 | `change` 事件在完成时触发 |
-| 事件 | `blur` 事件正常触发 |
-| 表单 | validate on change |
-| 表单 | validate on blur |
-| 表单 | validate on input |
-| 无障碍 | axe 无违规 |
+| 验证项 | 结果 |
+|--------|------|
+| Playground 首页基础渲染 | ✅ 通过 |
+| 最后一项不可点击（三重防护） | ✅ 通过 |
+| 折叠展示（7 项 → 3 项 + 省略号） | ✅ 通过 |
+| separator 字符串替换图标 | ✅ 通过 |
+| 空数组不渲染 | ✅ 通过 |
+| 单元测试（折叠/空数组/无障碍） | ✅ 通过 |
+| Linter 检查 | ✅ 零错误 |
+| hover 下划线交互效果 | ✅ 通过 |
+| active 项 cursor-default | ✅ 通过 |
 
 ---
 
-## Props 完整参考
+## 新增 Props
 
 | Prop | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `length` | `number \| string` | `6` | 输入框数量 |
-| `color` | `string` | `'primary'` | 主题色 |
-| `variant` | `string` | `'outline'` | 外观变体 |
-| `size` | `string` | `'md'` | 尺寸 |
-| `modelValue` | `number[]` | — | v-model 绑定 |
-| `defaultValue` | `number[]` | — | 默认值 |
-| `placeholder` | `string` | — | 占位符 |
-| `mask` | `boolean` | — | 密码遮罩 |
-| `disabled` | `boolean` | — | 禁用 |
-| `required` | `boolean` | — | 必填 |
-| `highlight` | `boolean` | — | 高亮环色 |
-| `autofocus` | `boolean` | — | 自动聚焦 |
-| `autofocusDelay` | `number` | `0` | 聚焦延迟 |
-| `fixed` | `boolean` | — | 保持移动端字号 |
-| `id` | `string` | — | HTML id |
-| `name` | `string` | — | HTML name |
-| `ui` | `object` | — | 自定义样式槽位 |
+| `separator` | `string` | — | 字符串分隔符，优先于 `separatorIcon` |
+| `maxItems` | `number` | `undefined` | 最大可见项数（不含省略项），≤2 时不折叠 |
+| `ellipsisIcon` | `IconProps['name']` | `i-lucide-ellipsis` | 省略号图标 |
 
-## Events 完整参考
+## 新增 Slots
 
-| Event | 参数 | 说明 |
-|-------|------|------|
-| `complete` | `value: string` | 所有格子填满时触发 |
-| `update:modelValue` | `value: number[]` | 值变化时触发 |
-| `change` | `event: Event` | 完成时触发 |
-| `blur` | `event: FocusEvent` | 失焦时触发 |
-
-## Expose
-
-| Name | Type |
+| Slot | 说明 |
 |------|------|
-| `inputsRef` | `Ref<ComponentPublicInstance[]>` |
+| `separatorLabel` | 字符串分隔符容器 |
+| `ellipsisIcon` | 省略号图标 |
+| `overflow` | 省略项完整自定义 |
