@@ -1,169 +1,133 @@
-# Breadcrumb 组件增强 — 任务总结
+# Breadcrumb 组件增强
 
-## 任务背景
+## 需求描述
 
-基于 Nuxt UI 仓库，对 `Breadcrumb` 面包屑组件进行全面功能增强，包括交互安全防护、折叠展示、分隔符定制、无障碍增强等多项改进。
+我需要给 Nuxt UI 的 Breadcrumb 面包屑组件做几个重要增强：
 
----
+1. **最后一项不可点击**：面包屑的最后一项代表当前页面，用户不应该能点击它跳转。即使开发者不小心给最后一项设置了 `to` 属性，组件也应该在代码层面强制忽略，不让用户跳走。
 
-## 修改清单
+2. **长路径折叠**：当面包屑层级很深（比如超过 5 层），全部显示会占满一整行。我希望能设置一个 `max-items` 属性，超过这个数量就把中间的项折叠成省略号（...），只保留第一项和最后一项。
 
-### 新增文件
+3. **分隔符可自定义**：默认的分隔符是右箭头图标，但我希望能用简单的字符串（比如 `>` 或 `/`）作为分隔符，用起来更方便。
 
-| 文件 | 说明 |
-|------|------|
-| `docs/content/docs/2.components/breadcrumb.md` | 完整组件文档（Separator String / Max Items 章节） |
-| `test/components/Breadcrumb.spec.ts` | 单元测试（含折叠、空数组、无障碍验证） |
+4. **无障碍支持**：面包屑需要满足屏幕阅读器和 SEO 的要求，包括 `<nav aria-label>` 包裹、最后一项 `aria-current="page"`、分隔符对屏幕阅读器隐藏。
 
-### 修改文件
+5. **空数组不报错**：如果 `items` 是空数组或没传，组件不应该渲染任何东西，也不要报错。
 
-| 文件 | 修改内容 |
+## 修改的文件
+
+| 文件 | 改了什么 |
 |------|----------|
-| `src/runtime/components/Breadcrumb.vue` | 核心逻辑重构：三重不可点击防护、折叠算法、separator 字符串、v-if 降级、aria 增强 |
-| `src/theme/breadcrumb.ts` | 新增 separatorLabel / ellipsisIcon slot、active 状态 pointer-events-none + cursor-default、hover 下划线增强、间距优化 |
+| `src/runtime/components/Breadcrumb.vue` | 核心逻辑：三重防护让最后一项不可点击、折叠算法、separator 字符串支持、v-if 空数组降级、aria-label 省略号 |
+| `src/theme/breadcrumb.ts` | 新增 separatorLabel/ellipsisIcon slot、active 加 pointer-events-none + cursor-default、hover 加下划线、间距从 gap-1.5 调到 gap-x-2.5 |
+| `docs/content/docs/2.components/breadcrumb.md` | 新增 Separator String 和 Max Items 两个章节 |
+| `test/components/Breadcrumb.spec.ts` | 新增折叠测试、空数组测试、separator 字符串测试 |
+| `playgrounds/nuxt/app/pages/index.vue` | 清理验证代码，恢复原始状态 |
 
----
+## 验收步骤
 
-## 核心代码解析
+### 步骤 1：安装依赖并启动 Playground
 
-### 1. 三重不可点击防护
-
-确保面包屑最后一项（当前页面）绝对不可点击，即使开发者误设 `to` 属性：
-
-```ts
-// 第一重：逻辑层 — 剥离 to 属性
-pickLinkProps(active ? { ...item, to: undefined } : item)
-
-// 第二重：样式层 — 禁用 + 禁止指针事件
-disabled: !!(item.disabled || isActive)
-to: isActive ? false : !!item.to
-
-// 第三重：CSS 层 — pointer-events-none + cursor-default
-active: { true: { link: 'text-primary font-semibold pointer-events-none cursor-default' } }
+```bash
+pnpm install
+pnpm run dev:prepare
+pnpm run dev
 ```
 
-### 2. 折叠算法（visibleItems computed）
+打开浏览器访问 `http://localhost:3000`，确认页面正常加载不报错。
 
-当 `items.length > maxItems` 时，保留首尾项，中间替换为省略号：
+### 步骤 2：验证最后一项不可点击
 
-```ts
-const visibleItems = computed(() => {
-  // 保底：2 项及以下不折叠
-  if (items.length <= 2 || !maxItems || items.length <= maxItems) {
-    return items.map(...)
-  }
+在 Playground 首页或任意页面添加以下代码：
 
-  // 首项保护：headCount >= 1
-  const headCount = Math.max(1, Math.ceil((max - 1) / 2))
-  const tailCount = Math.max(1, max - headCount)
-
-  return [...head, { type: 'overflow' }, ...tail]
-})
+```vue
+<UBreadcrumb
+  :items="[
+    { label: '首页', to: '/' },
+    { label: '组件', to: '/components' },
+    { label: '面包屑', to: '/should-not-navigate' }
+  ]"
+/>
 ```
 
-**关键设计决策：**
-- `maxItems` 不含省略项本身
-- `items.length <= 2` 强制不折叠（防御 max-items=1 误设）
-- 首项 `Math.max(1, ...)` 始终保留
-- 省略项通过 `#overflow` 插槽可自定义
+**看哪里**：最后一项"面包屑"
+**应该看到**：
+- 文字颜色是主题色（高亮），不是灰色
+- 鼠标悬停时，光标是默认箭头（不是手型 pointer）
+- 点击"面包屑"不会跳转到 `/should-not-navigate`
 
-### 3. 分隔符增强
+### 步骤 3：验证折叠功能
 
-- **`separator` 字符串 prop**：`separator=">"` 替换默认图标，优先级高于 `separatorIcon`
-- **主题适配**：新增 `separatorLabel: 'text-muted text-sm'` slot
-- **间距优化**：`list` 从 `gap-1.5` 调整为 `gap-x-2.5 gap-y-1`，分隔符不再紧贴文字
-
-### 4. 空数组优雅降级
-
-```html
-<Primitive v-if="items?.length" ...>
+```vue
+<UBreadcrumb
+  :items="[
+    { label: '首页', to: '/' },
+    { label: '产品', to: '/products' },
+    { label: '电子产品', to: '/products/electronics' },
+    { label: '手机', to: '/products/electronics/phones' },
+    { label: 'iPhone 15', to: '/iphone-15' }
+  ]"
+  :max-items="3"
+/>
 ```
 
-`items` 为空数组或 `undefined` 时，组件不渲染任何 DOM。
+**看哪里**：面包屑渲染结果
+**应该看到**：
+- 只显示 3 个项：`首页 > ... > iPhone 15`
+- 中间有一个省略号图标（默认是 `i-lucide-ellipsis`）
+- "首页"和"iPhone 15"都可以点击跳转
+- 省略号不可点击
 
-### 5. SEO 与无障碍增强
+### 步骤 4：验证分隔符字符串
 
-| 特性 | 实现 |
-|------|------|
-| `<nav aria-label="breadcrumb">` | Primitive 默认渲染为 `<nav>` |
-| `aria-current="page"` | 最后一项自动添加 |
-| 分隔符隐藏 | `role="presentation" aria-hidden="true"` |
-| 省略号标签 | `aria-label="显示更多路径"` |
-| 语义化结构 | `<ol>` + `<li>` 有序列表 |
-
-### 6. 交互体验优化
-
-- **非 active 可链接项**：hover 时颜色加深 + 下划线（`hover:text-default hover:underline underline-offset-4`）
-- **active 项**：`pointer-events-none` + `cursor-default`，悬停时保持默认箭头
-- **省略号图标**：默认 `i-lucide-ellipsis`，可通过 `ellipsisIcon` prop 或 `#overflow` 插槽自定义
-
----
-
-## 主题配置最终版
-
-```ts
-// src/theme/breadcrumb.ts
-{
-  slots: {
-    root: 'relative min-w-0',
-    list: 'flex items-center gap-x-2.5 gap-y-1',
-    item: 'flex min-w-0',
-    link: 'group relative flex items-center gap-1.5 text-sm min-w-0 focus-visible:outline-primary',
-    linkLeadingIcon: 'shrink-0 size-5',
-    linkLeadingAvatar: 'shrink-0',
-    linkLeadingAvatarSize: '2xs',
-    linkLabel: 'truncate',
-    separator: 'flex',
-    separatorLabel: 'text-muted text-sm',       // 新增
-    separatorIcon: 'shrink-0 size-5 text-muted',
-    ellipsisIcon: 'shrink-0 size-5 text-muted'  // 新增
-  },
-  variants: {
-    active: {
-      true: { link: 'text-primary font-semibold pointer-events-none cursor-default' },
-      false: { link: 'text-muted font-medium' }
-    },
-    disabled: {
-      true: { link: 'cursor-not-allowed opacity-75' }
-    }
-  },
-  compoundVariants: [{
-    disabled: false, active: false, to: true,
-    class: { link: ['hover:text-default hover:underline underline-offset-4', transitions && 'transition-colors'] }
-  }]
-}
+```vue
+<UBreadcrumb
+  :items="[
+    { label: '首页', to: '/' },
+    { label: '组件', to: '/components' },
+    { label: '面包屑', to: '/breadcrumb' }
+  ]"
+  separator=">"
+/>
 ```
 
----
+**看哪里**：项之间的分隔符
+**应该看到**：
+- 分隔符是文字 `>` 而不是箭头图标
+- `>` 和文字之间有适当间距，不会紧贴
 
-## 验证结果
+### 步骤 5：验证空数组不报错
 
-| 验证项 | 结果 |
-|--------|------|
-| Playground 首页基础渲染 | ✅ 通过 |
-| 最后一项不可点击（三重防护） | ✅ 通过 |
-| 折叠展示（7 项 → 3 项 + 省略号） | ✅ 通过 |
-| separator 字符串替换图标 | ✅ 通过 |
-| 空数组不渲染 | ✅ 通过 |
-| 单元测试（折叠/空数组/无障碍） | ✅ 通过 |
-| Linter 检查 | ✅ 零错误 |
-| hover 下划线交互效果 | ✅ 通过 |
-| active 项 cursor-default | ✅ 通过 |
+```vue
+<UBreadcrumb :items="[]" />
+<UBreadcrumb />
+```
 
----
+**看哪里**：页面控制台和渲染结果
+**应该看到**：
+- 页面不报错
+- 两个组件都不渲染任何 DOM 元素
 
-## 新增 Props
+### 步骤 6：运行单元测试
 
-| Prop | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `separator` | `string` | — | 字符串分隔符，优先于 `separatorIcon` |
-| `maxItems` | `number` | `undefined` | 最大可见项数（不含省略项），≤2 时不折叠 |
-| `ellipsisIcon` | `IconProps['name']` | `i-lucide-ellipsis` | 省略号图标 |
+```bash
+pnpm run test -- --run test/components/Breadcrumb.spec.ts
+```
 
-## 新增 Slots
+**看哪里**：测试输出
+**应该看到**：
+- 所有测试用例通过
+- 包含 `renders ellipsis icon when items exceed maxItems` 测试
+- 包含 `renders nothing when items is empty` 测试
 
-| Slot | 说明 |
-|------|------|
-| `separatorLabel` | 字符串分隔符容器 |
-| `ellipsisIcon` | 省略号图标 |
-| `overflow` | 省略项完整自定义 |
+### 步骤 7：运行 Lint 和类型检查
+
+```bash
+pnpm run lint
+pnpm run typecheck
+```
+
+**看哪里**：命令输出
+**应该看到**：
+- Lint 零错误
+- TypeCheck 零错误
