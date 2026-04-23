@@ -1,7 +1,7 @@
-name: nuxt-ui-otp-input
+name: otp-input-nuxt-ui
 channels:
   - defaults
-  - conda-forge
 dependencies:
-  - nodejs>=18.0.0
-  - pnpm>=8.0.0
+  - nodejs=20
+  - npm=10
+  - git
