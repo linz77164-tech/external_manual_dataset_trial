@@ -1,0 +1,5 @@
+name: magicui-morphing-text
+channels:
+  - defaults
+dependencies:
+  - nodejs=20
