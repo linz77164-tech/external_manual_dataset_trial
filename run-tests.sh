@@ -8,7 +8,7 @@ echo "=== MorphingText Test Suite ==="
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR/final"
+cd "$SCRIPT_DIR/final/apps/www"
 
 PASS=0
 FAIL=0
@@ -16,7 +16,7 @@ FAIL=0
 # Test 1: Check that all required files exist
 echo "[1/5] Checking file presence..."
 REQUIRED_FILES=(
-    "components/magicui/morphing-text.tsx"
+    "registry/magicui/morphing-text.tsx"
     "registry/lib/svg-path-utils.ts"
     "registry/lib/font-loader.ts"
     "components/sections/hero-title.tsx"
@@ -51,7 +51,7 @@ echo ""
 
 # Test 3: Check no console.log in component files
 echo "[3/5] Checking for debug console.log..."
-LOG_COUNT=$(grep -r "console\.log" components/magicui/morphing-text.tsx 2>/dev/null | wc -l)
+LOG_COUNT=$(grep -r "console\.log" registry/magicui/morphing-text.tsx 2>/dev/null | wc -l)
 if [ "$LOG_COUNT" -eq 0 ]; then
     echo "  OK: No console.log in morphing-text.tsx"
     ((PASS++))
@@ -63,7 +63,7 @@ echo ""
 
 # Test 4: Check no debugBorder references
 echo "[4/5] Checking for debug border remnants..."
-BORDER_COUNT=$(grep -r "debugBorder\|border-red" components/ 2>/dev/null | wc -l)
+BORDER_COUNT=$(grep -r "debugBorder\|border-red" components/ registry/ 2>/dev/null | wc -l)
 if [ "$BORDER_COUNT" -eq 0 ]; then
     echo "  OK: No debugBorder/border-red references"
     ((PASS++))
