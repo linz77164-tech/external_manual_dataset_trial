@@ -1,30 +1,39 @@
 {
-  "name": "magicui-morphing-text",
-  "version": "1.0.0",
+  "name": "magicui",
   "private": true,
-  "description": "MorphingText component — SVG path interpolation with spring physics for smooth text transitions",
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "clsx": "^2.1.0",
-    "motion": "^11.15.0",
-    "next": "^14.2.0",
-    "opentype.js": "^1.3.4",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "tailwind-merge": "^2.5.0"
+    "preinstall": "npx only-allow pnpm",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "typecheck": "turbo run typecheck",
+    "format:fix": "turbo run format:fix",
+    "format:fix:silent": "turbo run format:fix -- --log-level silent",
+    "format:check": "turbo run format:check",
+    "registry-deps:check": "pnpm --filter=www registry-deps:check",
+    "build:registry": "pnpm --filter=www build:registry && pnpm --filter=www lint:fix && pnpm format:fix:silent",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm registry-deps:check"
   },
   "devDependencies": {
-    "@types/node": "25.6.0",
-    "@types/opentype.js": "^1.3.0",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.5.0"
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "js-yaml": "^4.1.0",
+    "lefthook": "^1.13.4",
+    "turbo": "^2.5.8",
+    "ultracite": "5.4.4"
+  },
+  "engines": {
+    "node": ">=22.14.0",
+    "pnpm": ">=9"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
