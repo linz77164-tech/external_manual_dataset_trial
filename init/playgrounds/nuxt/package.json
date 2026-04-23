@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@nuxt/ui-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.67",
+    "@ai-sdk/gateway": "^3.0.91",
+    "@ai-sdk/vue": "^3.0.149",
+    "@iconify-json/lucide": "^1.2.101",
+    "@iconify-json/simple-icons": "^1.2.77",
+    "@internationalized/date": "^3.12.0",
+    "@nuxt/content": "^3.12.0",
+    "@nuxt/ui": "workspace:*",
+    "@tiptap/extension-emoji": "^3.22.3",
+    "@tiptap/extension-text-align": "^3.22.3",
+    "ai": "^6.0.149",
+    "nuxt": "^4.4.2",
+    "tailwindcss": "^4.2.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vue-tsc": "^3.2.6"
+  }
+}

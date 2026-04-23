@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== Breadcrumb 组件增强 - 复现脚本 ==="
+echo "=== Breadcrumb 组件 - 复现脚本 ==="
 
 cd final
 echo "[1/3] 安装依赖..."

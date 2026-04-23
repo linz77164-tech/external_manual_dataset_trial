@@ -1,7 +1,0 @@
-name: nuxt-ui-breadcrumb
-channels:
-  - defaults
-  - conda-forge
-dependencies:
-  - nodejs>=18.0.0
-  - pnpm>=8.0.0

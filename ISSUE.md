@@ -1,4 +1,18 @@
-给面包屑组件加上折叠省略号、让最后一项点不动、支持字符串分隔符，空数组也不能崩
+﻿# Breadcrumb 组件增强
+
+## 需求描述
+
+我需要给 Nuxt UI 的 Breadcrumb 面包屑组件做几个重要增强：
+
+1. **最后一项不可点击**：面包屑的最后一项代表当前页面，用户不应该能点击它跳转。即使开发者不小心给最后一项设置了 `to` 属性，组件也应该在代码层面强制忽略，不让用户跳走。
+
+2. **长路径折叠**：当面包屑层级很深（比如超过 5 层），全部显示会占满一整行。我希望能设置一个 `max-items` 属性，超过这个数量就把中间的项折叠成省略号（...），只保留第一项和最后一项。
+
+3. **分隔符可自定义**：默认的分隔符是右箭头图标，但我希望能用简单的字符串（比如 `>` 或 `/`）作为分隔符，用起来更方便。
+
+4. **无障碍支持**：面包屑需要满足屏幕阅读器和 SEO 的要求，包括 `<nav aria-label>` 包裹、最后一项 `aria-current="page"`、分隔符对屏幕阅读器隐藏。
+
+5. **空数组不报错**：如果 `items` 是空数组或没传，组件不应该渲染任何东西，也不要报错。
 
 ## 修改的文件
 
@@ -15,7 +29,6 @@
 ### 步骤 1：安装依赖并启动 Playground
 
 ```bash
-cd final
 pnpm install
 pnpm run dev:prepare
 pnpm run dev
@@ -98,7 +111,7 @@ pnpm run dev
 ### 步骤 6：运行单元测试
 
 ```bash
-sh run-tests.sh
+pnpm run test -- --run test/components/Breadcrumb.spec.ts
 ```
 
 **看哪里**：测试输出
@@ -110,7 +123,6 @@ sh run-tests.sh
 ### 步骤 7：运行 Lint 和类型检查
 
 ```bash
-cd final
 pnpm run lint
 pnpm run typecheck
 ```
